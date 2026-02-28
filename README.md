@@ -2,6 +2,8 @@
 
 Restaurant recommendation system built with AWS services and a simple web frontend.
 
+- Abhinav Sivakumar as21153@nyu.edu, Carlin Joseph cj2803@nyu.edu
+
 ## Project Structure
 
 - `front-end/`: Static chat UI and generated API Gateway SDK
