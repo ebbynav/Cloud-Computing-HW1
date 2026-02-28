@@ -1,47 +1,42 @@
-# Cloud-Computing-HW1
+# Cloud Computing HW1
+
+Restaurant recommendation system built with AWS services and a simple web frontend.
+
+## Project Structure
+
+- `front-end/`: Static chat UI and generated API Gateway SDK
+- `lambda-functions/LF0.py`: API-facing Lambda that forwards user messages to Amazon Lex V2
+- `lambda-functions/LF1.py`: Lex Lambda hook for slot validation and SQS message publishing
+- `lambda-functions/LF2.py`: Worker Lambda that reads SQS, queries OpenSearch/DynamoDB, and emails results via SES
+- `other-scripts/dynamo.py`: Loads restaurant data from Yelp API into DynamoDB
+- `other-scripts/load_opensearch.py`: Indexes DynamoDB restaurant records into OpenSearch
+- `requirements.txt`: Python dependencies
+
+## Prerequisites
+
+- Python 3.10+
+- AWS account with Lex V2, Lambda, SQS, DynamoDB, OpenSearch, and SES configured
 
 ## Setup
 
-Create and activate a virtual environment, then install dependencies:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-On Windows (PowerShell):
+## Data Loading Scripts
 
 ```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python .\other-scripts\dynamo.py
+python .\other-scripts\load_opensearch.py
 ```
 
-## API key
+## Lambda Configuration Notes
 
-Set your Yelp API key as an environment variable before running the scraper:
+Set Lambda environment variables as needed:
 
-```bash
-export YELP_API_KEY="your_api_key_here"
-```
+- `LF0.py`: `LEX_BOT_ID`, `LEX_BOT_ALIAS_ID`, `LEX_LOCALE_ID`
+- `LF1.py`: `SQS_QUEUE_URL`
 
-On Windows (PowerShell):
-
-```powershell
-$env:YELP_API_KEY="your_api_key_here"
-```
-
-## Scripts
-
-- `other-scripts/yelp_scraper.py` queries the Yelp API for restaurants by cuisine/zip code and writes results to `restaurants.json`.
-- `other-scripts/validate_restaurants.py` checks the dataset size, cuisine counts, and duplicate Business IDs.
-- `other-scripts/sort_restaurants.py` sorts `restaurants.json` by a fixed cuisine order and writes `restaurants_sorted.json`.
-
-## Usage
-
-```bash
-python other-scripts/yelp_scraper.py
-python other-scripts/validate_restaurants.py
-python other-scripts/sort_restaurants.py
-```
+Also verify queue URLs, sender email, and service endpoints used in code before deployment.
